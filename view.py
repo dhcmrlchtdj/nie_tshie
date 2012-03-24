@@ -137,7 +137,7 @@ class New(BookmarkUtil):
                 # 寻找标题时出错
                 return url
 
-        self.title = self.get_title(self.url)
+        self.title = get_title(self.url)
 
         self.render('new.html', title='new', contents={
             'url': self.url, 'title': self.title})
