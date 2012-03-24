@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h1>link</h1>
+{% for b in contents['bookmarks'] %}
+<p>{{ b['url'] }}</p>
+<p>{{ b['title'] }}</p>
+<p>{{ b['desc'] }}</p>
+<p>{{ b['time'] }}</p>
+<p>{{ b['tags'] }}</p>
+{% end %}
+
+
+{% for tag in contents['tags'] %}
+<p>{{ tag['name'] }}</p>
+<p>{{ tag['count'] }}</p>
+{% end %}
+
+
+{% end %}
+
+{% block js %}
+{% end %}

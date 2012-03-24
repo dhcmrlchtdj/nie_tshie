@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<p>welcome</p>
+
+<h1>tags</h1>
+{% for tag in contents['tags'] %}
+<p>{{ tag['name'] }}</p>
+<p>{{ tag['count'] }}</p>
+{% end %}
+
+<h1>link</h1>
+{% for b in contents['bookmarks'] %}
+<p>{{ b['url'] }}</p>
+<p>{{ b['title'] }}</p>
+<p>{{ b['desc'] }}</p>
+<p>{{ b['time'] }}</p>
+<p>{{ b['tags'] }}</p>
+{% end %}
+
+
+<a href="/bookmark/new">new</a>
+
+<a href="/dashboard">dashboard</a>
+
+{% end %}
+
+{% block js %}
+{% end %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form method="get" action="/output">
+    <select name="filter" multiple="multiple">
+        <option value="all" selected="selected">ALL TAGS</option>
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <input type="submit" />
+</form>
+
+{% end %}
+
+{% block js %}
+{% end %}

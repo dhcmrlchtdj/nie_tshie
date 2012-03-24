@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+{% if contents %}
+<form method="post" action="/bookmark/new">
+    {{ xsrf_form_html() }}
+    <input type="text" name="url" value="{{ contents['url'] }}" />
+    <input type="text" name="title" value="{{ contents['title'] }}" />
+    <textarea name="desc"></textarea>
+    <input type="text" name="tags" />
+    <input type="submit" />
+</form>
+{% else %}
+<form method="get" action="/bookmark/new">
+    <input type="text" name="url" />
+    <input type="submit" />
+</form>
+{% end %}
+
+{% end %}
+
+
+
+{% block js %}
+{% end %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<form method="get" action="/dashboard/output">
+    <input type="checkbox" name="filter"/>filter
+    <select name="tags" multiple="multiple">
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <input type="submit" value="output"/>
+</form>
+
+
+<form method="post" action="/dashboard/input" enctype="multipart/form-data">
+    {{ xsrf_form_html() }}
+    <input type="file" name="bookmark_file" />
+    <input type="submit" value="input" />
+</form>
+
+
+<form method="get" action="/dashboard/delete_tag">
+    <select name="tag_name">
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <input type="submit" value="delete it"/>
+</form>
+
+
+<form method="get" action="/dashboard/move_tag">
+    <select name="from_name">
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <select name="to_name">
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <input type="submit" value="move to"/>
+</form>
+
+
+<form method="get" action="/dashboard/move_tag">
+    <select name="from_name">
+        {% for t in contents %}
+        <option value="{{ t['name'] }}">{{ t['name'] }}</option>
+        {% end %}
+    </select>
+    <input type="text" name="to_name" />
+    <input type="submit" value="rename to"/>
+</form>
+
+{% end %}
+
+
+
+{% block js %}
+{% end %}

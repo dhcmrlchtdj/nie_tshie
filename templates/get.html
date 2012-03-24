@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<p>{{ contents['url'] }}</p>
+<p>{{ contents['title'] }}</p>
+<p>{{ contents['desc'] }}</p>
+<p>{{ contents['time'] }}</p>
+<p>{{ contents['tags'] }}</p>
+
+
+<form method="post" action="/bookmark/set">
+    {{ xsrf_form_html() }}
+    <input type="text" name="url" value="{{ contents['url'] }}" />
+    <input type="text" name="title" value="{{ contents['title'] }}" />
+    <textarea name="desc">{{ contents['desc'] }}</textarea>
+    <input type="text" name="tags" value="{{ contents['tags'] }}" />
+    <input type="submit" />
+</form>
+
+<a href="/bookmark/del/{{ contents['url'] }}">del</a>
+{% end %}
+
+
+
+{% block js %}
+{% end %}
