@@ -72,9 +72,15 @@ class BookmarkUtil(Base):
         import re
         re_url = re.compile(
             r'''(?ix)
-            ^((ht|f)tps?://)?
-            ([-.a-z0-9_]+\.([a-z]{2,4}|\d{1,3}))
-            (/.*)?$''')
+            ^((ht|f)tps?://)?           # protocol
+            (                           #! group(1)
+                [-.a-z0-9_]+            # google/youtube/... or ddd.ddd.ddd
+                \.                      # . (dot)
+                ([a-z]{2,4}|\d{1,3})    # com/net/... or ddd
+                (:\d{2,5})?             # port
+            )
+            (/.*)?$                     # pathname
+            ''')
         match_url = re_url.match(url)
 
         if not match_url: return
@@ -303,18 +309,27 @@ class Input(Base):
         import re
 
         re_markup = re.compile(
-            r'''(?ix) <(?:
-            # match <A HREF=""></A>
-            (?:(?P<a>A)\s[^>]*HREF=
-            "(?P<url>(?:f|ht)tps?://[^"]+)"
-            [^>]+>(?P<title>[^<]+)</A) |
-
-            # match <H3></H3>
-            (?:(?P<h3>H3)[^>]+>(?P<folder>[^<]+)</H3) |
-
-            # match </DL><P>
-            (?:/DL><(?P<p>P))
-            )>''')
+            r'''(?ix)
+            <(                                  # <
+            (                                   #OR match <A HREF=""></A>
+                (?P<a>A)                        # A             group('a')
+                \s[^>]*                         # whitespace
+                HREF=                           # HREF=
+                "(?P<url>(f|ht)tps?://[^"]+)"   # "http://..."  group('url')
+                [^>]+>                          # ...>
+                (?P<title>[^<]+)                # title         group('title')
+                </A                             # </A
+            ) | (                               #OR match <H3></H3>
+                (?P<h3>H3)                      # H3            group('h3')
+                [^>]+>                          # ...>
+                (?P<folder>[^<]+)               # folder's name group('folder')
+                </H3                            # </H3
+            ) | (                               #OR match </DL><P>
+                /DL>                            # /DL>
+                <(?P<p>P)                       # <P            group('p')
+            )
+            )>                                  # >
+            ''')
 
         m_markup = re_markup.finditer(bookmark_file)
         for match in m_markup:

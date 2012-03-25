@@ -12,7 +12,7 @@ import view
 
 handlers = [
     (r'/main(?:/([1-9]{1}\d*))?', view.Main),
-    (r'/tags/([^/]+)(?:/([1-9]{1}\d*))?', view.Filter),
+    (r'/tags/([^/]+)(?:/([1-9]\d*))?', view.Filter),
 
     (r'/bookmark/new', view.New),
     (r'/bookmark/get/(.{4,})', view.Get),
@@ -31,7 +31,6 @@ handlers = [
 settings = {
     'template_path': os.path.join(os.path.dirname(__file__), 'templates'),
     'cookie_secret': base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes),
-    #'cookie_secret': os.urandom(24),
     #'login_url': '/login',
     'autoescape': None,
     'xsrf_cookies': True,
