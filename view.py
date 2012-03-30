@@ -105,45 +105,8 @@ class New(BookmarkUtil):
             self.redirect('/bookmark/get/'+self.url)
             return
 
-        def get_title(url):
-            """从所给的url获取页面标题，没找到标题就返回url"""
 
-            from google.appengine.api import urlfetch
-            try:
-                result = urlfetch.fetch(url, allow_truncated=True)
-            except:
-                # 下载页面失败
-                return url
-
-            if result.status_code == 200:
-                import re
-
-                # 获取页面编码
-                re_charset = re.compile(
-                    r'''(?ix)
-                    charset=(?:'|")?([-._:()0-9a-z]{3,})(?:'|")?
-                    ''')
-                match_charset = re_charset.search(result.content)
-
-                charset = match_charset.group(1) if match_charset else 'gbk'
-                # 对utf8以外的网页重新编码
-                if charset not in ['utf8', 'utf-8', 'UTF8', 'UTF-8']:
-                    result.content = result.content.decode(charset, 'ignore')
-
-                # 获取页面标题
-                re_title = re.compile(
-                    r'''(?ix)
-                    <title>([^<]+)</title>
-                    ''')
-                match_title = re_title.search(result.content)
-
-                if match_title:
-                    return match_title.group(1)
-            else:
-                # 寻找标题时出错
-                return url
-
-        self.title = get_title(self.url)
+        self.title = self.get_title(self.url)
 
         self.render('new.html', title='new', contents={
             'url': self.url, 'title': self.title})
@@ -171,6 +134,52 @@ class New(BookmarkUtil):
             })
 
         self.redirect('/bookmark/get/'+self.url)
+
+
+    @staticmethod
+    def get_title(url):
+        """从所给的url获取页面标题，没找到标题就返回url"""
+
+        from google.appengine.api import urlfetch
+        try:
+            result = urlfetch.fetch(url, allow_truncated=True)
+        except:
+            # 下载页面失败
+            return url
+
+        if result.status_code == 200:
+            import re
+
+            # 获取页面编码
+            re_charset = re.compile(
+                r'''(?ix)
+                charset=                # charset="UTF-8" OR charset=UTF-8"
+                ('|")?
+                ([-._:()0-9a-z]{3,})    #! charset
+                ('|")?
+                ''')
+
+            match_charset = re_charset.search(result.content)
+
+            charset = match_charset.group(2) if match_charset else 'gbk'
+            # 对utf8以外的网页重新编码
+            if charset not in ['utf8', 'utf-8', 'UTF8', 'UTF-8']:
+                result.content = result.content.decode(charset, 'ignore')
+
+            # 获取页面标题
+            re_title = re.compile(
+                r'''(?ix)
+                <title>
+                ([^<]+)     #! title
+                </title>
+                ''')
+            match_title = re_title.search(result.content)
+
+            if match_title:
+                return match_title.group(1)
+        else:
+            # 寻找标题时出错
+            return url
 
 
 
@@ -282,7 +291,7 @@ class Input(Base):
                 # 添加到数据库
                 Bookmark.input_bookmarks(self.bookmarks)
 
-        #self.redirect('/dashboard')
+        self.redirect('/dashboard')
 
 
     @classmethod
