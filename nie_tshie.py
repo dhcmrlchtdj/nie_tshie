@@ -10,6 +10,7 @@ import tornado.wsgi
 import view
 
 
+
 handlers = [
     (r'/main(?:/([1-9]{1}\d*))?', view.Main),
     (r'/tags/([^/]+)(?:/([1-9]\d*))?', view.Filter),
@@ -42,6 +43,7 @@ application = tornado.wsgi.WSGIApplication(handlers, **settings)
 
 if __name__ == '__main__':
     import wsgiref.handlers
+
     def main():
         wsgiref.handlers.CGIHandler().run(application)
     main()

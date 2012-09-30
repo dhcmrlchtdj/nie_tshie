@@ -6,10 +6,8 @@ import tornado.web
 from model import Tag, Bookmark
 
 
-
 class Base(tornado.web.RequestHandler):
     pass
-
 
 
 class Redirect(Base):
@@ -20,7 +18,6 @@ class Redirect(Base):
         self.redirect('/main')
 
 
-
 class Main(Base):
     def get(self, page):
         # 获取bookmark
@@ -29,7 +26,7 @@ class Main(Base):
 
         if self.page > self.page_count:
             # url要求的页数超出了总页数
-            self.redirect('/main/'+str(self.page_count))
+            self.redirect('/main/' + str(self.page_count))
             return
 
         # 获取tag
@@ -37,7 +34,6 @@ class Main(Base):
 
         self.render('main.html', title=self.page_count, contents={
             'bookmarks': self.bookmarks, 'tags': self.tags})
-
 
 
 class Filter(Base):
@@ -60,7 +56,6 @@ class Filter(Base):
 
         self.render('filter.html', title=tag_names, contents={
             'bookmarks': self.bookmarks, 'tags': self.tags})
-
 
 
 class BookmarkUtil(Base):
@@ -89,7 +84,6 @@ class BookmarkUtil(Base):
         return url if match_url.group(1) else 'http://' + url
 
 
-
 class New(BookmarkUtil):
     def get(self):
         self.url = self.validate_url(self.get_argument('url', ''))
@@ -102,7 +96,7 @@ class New(BookmarkUtil):
         # /get/XXXX
         # 已收藏
         if Bookmark.get_by_url(self.url):
-            self.redirect('/bookmark/get/'+self.url)
+            self.redirect('/bookmark/get/' + self.url)
             return
 
 
@@ -133,7 +127,7 @@ class New(BookmarkUtil):
                 'desc': self.desc
             })
 
-        self.redirect('/bookmark/get/'+self.url)
+        self.redirect('/bookmark/get/' + self.url)
 
 
     @staticmethod
@@ -195,7 +189,7 @@ class Get(BookmarkUtil):
         self.bookmark = Bookmark.get_by_url(self.url)
         # 未收藏
         if not self.bookmark:
-            self.redirect('/bookmark/new/'+self.url)
+            self.redirect('/bookmark/new/' + self.url)
             return
 
         self.render('get.html', title='get', contents=self.bookmark.to_dict())
@@ -217,7 +211,7 @@ class Set(BookmarkUtil):
         self.bookmark = Bookmark.get_by_url(self.url)
         # 未收藏
         if not self.bookmark:
-            self.redirect('/bookmark/new/'+self.url)
+            self.redirect('/bookmark/new/' + self.url)
             return
 
         self.title = self.get_argument('title', '') or self.url
@@ -229,8 +223,8 @@ class Set(BookmarkUtil):
             'title': self.title,
             'desc': self.desc
         })
-        
-        self.redirect('/bookmark/get/'+self.url)
+
+        self.redirect('/bookmark/get/' + self.url)
 
 
 
@@ -367,7 +361,7 @@ class Output(Base):
         self.filter_bookmark = self.get_argument('filter', '')
         if self.filter_bookmark:
             self.tags = '+'.join(self.get_arguments('tags'))
-            self.redirect('/dashboard/output/'+self.tags)
+            self.redirect('/dashboard/output/' + self.tags)
             return
 
         # 如果有传入tag，针对tag过滤输出
@@ -386,4 +380,3 @@ class Dashboard(Base):
     def get(self):
         self.tags = Tag.get_all_tags()
         self.render('dashboard.html', title='dashboard', contents=self.tags)
-
